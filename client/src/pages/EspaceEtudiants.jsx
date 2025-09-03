@@ -1,397 +1,529 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faSearch, faFilter, faUsers, faHome, 
+  faBook, faGraduationCap, faMapMarkerAlt,
+  faStar, faComment, faHeart, faShare,
+  faCalendarAlt, faMoneyBillWave, faUserFriends
+} from '@fortawesome/free-solid-svg-icons';
 
 const EspaceEtudiants = () => {
-  // États pour les filtres
+  const [activeSection, setActiveSection] = useState('accueil');
+  const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     universite: '',
     filiere: '',
-    niveau: '',
-    budget: '',
-    typeLogement: '',
-    localisation: '',
-    compatibilite: ''
+    prixMax: '',
+    typeLogement: ''
   });
-  
-  // États pour la visibilité des filtres
-  const [filtersVisible, setFiltersVisible] = useState(true);
-  
-  // Données des étudiants (normalement viendraient d'une API)
-  const [etudiants] = useState([
-    {
-      id: 1,
-      nom: "Mamadou Diallo",
-      age: 23,
-      universite: "Université Gamal Abdel Nasser",
-      filiere: "Informatique",
-      niveau: "Licence 3",
-      localisation: "Hamdallaye, Conakry",
-      budget: "750 000 GNF/mois",
-      compatibilite: 92,
-      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-    },
-    {
-      id: 2,
-      nom: "Aïssatou Bah",
-      age: 21,
-      universite: "Université Kofi Annan",
-      filiere: "Médecine",
-      niveau: "Licence 2",
-      localisation: "Dixinn, Conakry",
-      budget: "600 000 GNF/mois",
-      compatibilite: 85,
-      photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-    },
-    {
-      id: 3,
-      nom: "Ibrahima Sow",
-      age: 24,
-      universite: "Université Général Lansana Conté",
-      filiere: "Économie",
-      niveau: "Master 1",
-      localisation: "Kindia",
-      budget: "500 000 GNF/mois",
-      compatibilite: 95,
-      photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-    }
-  ]);
 
-  // Gestionnaire de changement des filtres
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  // Données simulées pour les étudiants
+  const [etudiants, setEtudiants] = useState([]);
+  const [colocations, setColocations] = useState([]);
+  const [ressources, setRessources] = useState([]);
 
-  // Fonction pour obtenir la classe de couleur en fonction du pourcentage de compatibilité
-  const getCompatibilityClass = (percentage) => {
-    if (percentage >= 90) return "bg-[#3CB371]";
-    if (percentage >= 80) return "bg-[#F6A34A]";
-    return "bg-gray-500";
-  };
+  useEffect(() => {
+    // Chargement des données simulées
+    const etudiantsSimules = [
+      {
+        id: 1,
+        nom: 'Mamadou Diallo',
+        universite: 'Université Gamal Abdel Nasser',
+        filiere: 'Informatique',
+        niveau: 'L3',
+        photo: 'https://randomuser.me/api/portraits/men/32.jpg',
+        bio: 'Je recherche une colocation près du campus pour l\'année universitaire.',
+        interests: ['Sport', 'Musique', 'Voyages'],
+        rating: 4.5
+      },
+      {
+        id: 2,
+        nom: 'Aïssatou Bah',
+        universite: 'Université Sonfonia',
+        filiere: 'Droit',
+        niveau: 'M1',
+        photo: 'https://randomuser.me/api/portraits/women/44.jpg',
+        bio: 'Étudiante sérieuse cherche colocataire pour appartement à Conakry.',
+        interests: ['Lecture', 'Cinéma', 'Cuisine'],
+        rating: 4.8
+      },
+      {
+        id: 3,
+        nom: 'Sékou Camara',
+        universite: 'Université Julius Nyerere',
+        filiere: 'Économie',
+        niveau: 'L2',
+        photo: 'https://randomuser.me/api/portraits/men/52.jpg',
+        bio: 'Passionné de basketball, je cherche un logement pas cher à Kindia.',
+        interests: ['Basketball', 'Photographie', 'Technologie'],
+        rating: 4.2
+      }
+    ];
+
+    const colocationsSimulees = [
+      {
+        id: 1,
+        titre: 'Colocation 3 chambres à Conakry',
+        prix: '250 000 GNF/mois',
+        lieu: 'Conakry, près de l\'Université Gamal',
+        description: 'Appartement spacieux avec 3 chambres, salon commun et cuisine équipée. Idéal pour étudiants.',
+        image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+        placesDisponibles: 2,
+        equipements: ['Wi-Fi', 'Eau courante', 'Électricité', 'Cuisine équipée']
+      },
+      {
+        id: 2,
+        titre: 'Studio meublé pour étudiant',
+        prix: '350 000 GNF/mois',
+        lieu: 'Kindia, centre-ville',
+        description: 'Studio entièrement meublé avec kitchenette et salle de bain privative. Calme et sécurisé.',
+        image: 'https://images.unsplash.com/photo-1554995207-c18c203602cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+        placesDisponibles: 1,
+        equipements: ['Meublé', 'Salle de bain privative', 'Sécurité 24/7', 'Proche transport']
+      }
+    ];
+
+    const ressourcesSimulees = [
+      {
+        id: 1,
+        titre: 'Guide de recherche de logement étudiant',
+        type: 'Guide',
+        description: 'Conseils pratiques pour trouver un logement adapté à ton budget et à tes besoins.',
+        icon: faBook
+      },
+      {
+        id: 2,
+        titre: 'Bourses et aides financières',
+        type: 'Finance',
+        description: 'Liste des bourses disponibles pour les étudiants guinéens.',
+        icon: faMoneyBillWave
+      },
+      {
+        id: 3,
+        titre: 'Événements étudiants',
+        type: 'Événement',
+        description: 'Découvre les prochains événements organisés pour les étudiants.',
+        icon: faCalendarAlt
+      }
+    ];
+
+    setEtudiants(etudiantsSimules);
+    setColocations(colocationsSimulees);
+    setRessources(ressourcesSimulees);
+  }, []);
+
+  // Navigation sections
+  const sections = [
+    { id: 'accueil', label: 'Accueil', icon: faHome },
+    { id: 'etudiants', label: 'Étudiants', icon: faUsers },
+    { id: 'colocations', label: 'Colocations', icon: faUserFriends },
+    { id: 'ressources', label: 'Ressources', icon: faBook },
+    { id: 'forum', label: 'Forum', icon: faComment }
+  ];
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Header */}
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-[#2C5CD5]">LoguiStud</h1>
-            <nav className="ml-8 hidden md:block">
-              <ul className="flex space-x-6">
-                <li><a href="#" className="text-gray-600 hover:text-[#2C5CD5]">Accueil</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-[#2C5CD5]">Logements</a></li>
-                <li><a href="#" className="font-medium text-[#2C5CD5]">Étudiants</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-[#2C5CD5]">Propriétaires</a></li>
-              </ul>
-            </nav>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button className="bg-[#3CB371] text-white px-4 py-2 rounded-md hover:bg-green-600">Connexion</button>
-            <button className="bg-[#2C5CD5] text-white px-4 py-2 rounded-md hover:bg-blue-700">Inscription</button>
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* En-tête de l'espace étudiant */}
+      <div className="bg-[#2C5CD5] text-white py-12">
+        <div className="container mx-auto px-4">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Espace Étudiants</h1>
+          <p className="text-xl opacity-90">
+            Connecte-toi avec d'autres étudiants, trouve ta colocation idéale et découvre des ressources utiles
+          </p>
         </div>
-      </header>
+      </div>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#2C5CD5] to-[#3CB371] text-white py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">Trouvez votre colocataire idéal</h2>
-          <p className="text-xl mb-8">Connectez-vous avec des étudiants partageant les mêmes centres d'intérêt et préférences de vie</p>
-          <button className="bg-[#F6A34A] text-gray-900 font-bold px-6 py-3 rounded-md hover:bg-orange-400">Commencer la recherche</button>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {/* Search and Filters */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-            <h3 className="text-2xl font-bold text-gray-800 mb-4 md:mb-0">Rechercher des colocataires</h3>
-            <div className="flex space-x-4">
-              <button 
-                className="bg-[#F0F0F0] text-gray-800 px-4 py-2 rounded-md flex items-center"
-                onClick={() => setFiltersVisible(!filtersVisible)}
+      {/* Navigation */}
+      <div className="bg-white shadow-sm sticky top-0 z-10">
+        <div className="container mx-auto px-4">
+          <div className="flex overflow-x-auto">
+            {sections.map(section => (
+              <button
+                key={section.id}
+                className={`flex items-center space-x-2 px-6 py-4 border-b-2 transition-colors ${
+                  activeSection === section.id
+                    ? 'border-white text-[#2C5CD5]'
+                    : 'border-transparent text-gray-600 hover:text-gray-800'
+                }`}
+                onClick={() => setActiveSection(section.id)}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                </svg>
-                Filtres
+                <FontAwesomeIcon icon={section.icon} className="w-4" />
+                <span className="whitespace-nowrap">{section.label}</span>
               </button>
-              <div className="relative">
-                <input 
-                  type="text" 
-                  placeholder="Rechercher..." 
-                  className="bg-[#F0F0F0] text-gray-800 px-4 py-2 rounded-md pl-10 w-full md:w-64"
-                />
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 absolute left-3 top-2.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Filter Options */}
-          {filtersVisible && (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div>
-                  <label className="block text-gray-700 mb-2">Université</label>
-                  <select 
-                    name="universite"
-                    value={filters.universite}
-                    onChange={handleFilterChange}
-                    className="w-full bg-[#F0F0F0] border rounded-md p-2"
-                  >
-                    <option value="">Toutes les universités</option>
-                    <option>Université Gamal Abdel Nasser</option>
-                    <option>Université Général Lansana Conté</option>
-                    <option>Université Kofi Annan</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-gray-700 mb-2">Filière</label>
-                  <select 
-                    name="filiere"
-                    value={filters.filiere}
-                    onChange={handleFilterChange}
-                    className="w-full bg-[#F0F0F0] border rounded-md p-2"
-                  >
-                    <option value="">Toutes les filières</option>
-                    <option>Droit</option>
-                    <option>Médecine</option>
-                    <option>Informatique</option>
-                    <option>Économie</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-gray-700 mb-2">Niveau d'études</label>
-                  <select 
-                    name="niveau"
-                    value={filters.niveau}
-                    onChange={handleFilterChange}
-                    className="w-full bg-[#F0F0F0] border rounded-md p-2"
-                  >
-                    <option value="">Tous les niveaux</option>
-                    <option>Licence 1</option>
-                    <option>Licence 2</option>
-                    <option>Licence 3</option>
-                    <option>Master</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-gray-700 mb-2">Budget mensuel</label>
-                  <select 
-                    name="budget"
-                    value={filters.budget}
-                    onChange={handleFilterChange}
-                    className="w-full bg-[#F0F0F0] border rounded-md p-2"
-                  >
-                    <option value="">Tous les budgets</option>
-                    <option>0 - 500 000 GNF</option>
-                    <option>500 000 - 1 000 000 GNF</option>
-                    <option>1 000 000+ GNF</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-gray-700 mb-2">Type de logement</label>
-                  <select 
-                    name="typeLogement"
-                    value={filters.typeLogement}
-                    onChange={handleFilterChange}
-                    className="w-full bg-[#F0F0F0] border rounded-md p-2"
-                  >
-                    <option value="">Tous types</option>
-                    <option>Colocation</option>
-                    <option>Studio</option>
-                    <option>Chambre individuelle</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-gray-700 mb-2">Localisation</label>
-                  <select 
-                    name="localisation"
-                    value={filters.localisation}
-                    onChange={handleFilterChange}
-                    className="w-full bg-[#F0F0F0] border rounded-md p-2"
-                  >
-                    <option value="">Toute la Guinée</option>
-                    <option>Conakry</option>
-                    <option>Kindia</option>
-                    <option>Kankan</option>
-                    <option>Labé</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-gray-700 mb-2">Compatibilité</label>
-                  <select 
-                    name="compatibilite"
-                    value={filters.compatibilite}
-                    onChange={handleFilterChange}
-                    className="w-full bg-[#F0F0F0] border rounded-md p-2"
-                  >
-                    <option value="">Niveau de compatibilité</option>
-                    <option>Élevé</option>
-                    <option>Moyen</option>
-                    <option>Faible</option>
-                  </select>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Results Section */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6">Colocataires compatibles</h3>
-          
-          {/* Student Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {etudiants.map(etudiant => (
-              <div key={etudiant.id} className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:translate-y-[-5px] hover:shadow-lg">
-                <div className="relative">
-                  <img src={etudiant.photo} alt={etudiant.nom} className="w-full h-48 object-cover" />
-                  <div className={`absolute top-4 right-4 ${getCompatibilityClass(etudiant.compatibilite)} text-white px-3 py-1 rounded-full text-sm`}>
-                    {etudiant.compatibilite}% compatible
-                  </div>
-                </div>
-                <div className="p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="text-xl font-bold">{etudiant.nom}</h4>
-                    <span className="bg-[#F0F0F0] text-gray-800 text-xs px-2 py-1 rounded">{etudiant.age} ans</span>
-                  </div>
-                  <p className="text-gray-600 mb-2">{etudiant.universite}</p>
-                  <p className="text-gray-600 mb-4">{etudiant.filiere} - {etudiant.niveau}</p>
-                  
-                  <div className="flex items-center mb-4">
-                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#3CB371]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm">Cherche coloc à</p>
-                      <p className="font-medium">{etudiant.localisation}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#2C5CD5] font-bold">{etudiant.budget}</span>
-                    <button className="bg-[#2C5CD5] text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">Contacter</button>
-                  </div>
-                </div>
-              </div>
             ))}
           </div>
         </div>
+      </div>
 
-        {/* How It Works Section */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">Comment trouver un colocataire compatible</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[#2C5CD5] rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white text-2xl font-bold">1</span>
+      {/* Contenu principal */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Barre de recherche et filtres */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FontAwesomeIcon icon={faSearch} className="text-gray-400" />
               </div>
-              <h4 className="text-xl font-bold mb-2">Créez votre profil</h4>
-              <p className="text-gray-600">Remplissez vos informations personnelles, préférences de vie et critères de recherche.</p>
+              <input
+                type="text"
+                placeholder="Rechercher des étudiants, colocations, ressources..."
+                className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C5CD5]/20 focus:border-[#2C5CD5]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[#3CB371] rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white text-2xl font-bold">2</span>
-              </div>
-              <h4 className="text-xl font-bold mb-2">Trouvez des matches</h4>
-              <p className="text-gray-600">Notre algorithme vous propose des colocataires compatibles avec vos critères.</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[#F6A34A] rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white text-2xl font-bold">3</span>
-              </div>
-              <h4 className="text-xl font-bold mb-2">Connectez-vous</h4>
-              <p className="text-gray-600">Discutez avec vos matches et organisez une rencontre pour finaliser la colocation.</p>
-            </div>
+            <button className="bg-[#2C5CD5] text-white px-6 py-3 rounded-lg hover:bg-[#1a4bbd] transition flex items-center">
+              <FontAwesomeIcon icon={faFilter} className="mr-2" />
+              Filtres
+            </button>
           </div>
         </div>
 
-        {/* Testimonials */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">Témoignages d'étudiants</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-[#F0F0F0] p-6 rounded-lg">
-              <div className="flex items-center mb-4">
-                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" alt="Fatoumata" className="w-12 h-12 rounded-full mr-4" />
-                <div>
-                  <h4 className="font-bold">Fatoumata Diallo</h4>
-                  <p className="text-gray-600">Étudiante en Droit</p>
+        {/* Section Accueil */}
+        {activeSection === 'accueil' && (
+          <div className="animate-fade-in">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+              {/* Carte statistiques */}
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800">Étudiants inscrits</h3>
+                  <div className="w-12 h-12 rounded-full bg-[#2C5CD5]/10 flex items-center justify-center">
+                    <FontAwesomeIcon icon={faUsers} className="text-[#2C5CD5] text-xl" />
+                  </div>
+                </div>
+                <p className="text-3xl font-bold text-gray-800">1,245</p>
+                <p className="text-sm text-gray-500">+32 cette semaine</p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800">Colocations actives</h3>
+                  <div className="w-12 h-12 rounded-full bg-[#3CB371]/10 flex items-center justify-center">
+                    <FontAwesomeIcon icon={faHome} className="text-[#3CB371] text-xl" />
+                  </div>
+                </div>
+                <p className="text-3xl font-bold text-gray-800">89</p>
+                <p className="text-sm text-gray-500">+5 nouvelles cette semaine</p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800">Universités partenaires</h3>
+                  <div className="w-12 h-12 rounded-full bg-[#F6A34A]/10 flex items-center justify-center">
+                    <FontAwesomeIcon icon={faGraduationCap} className="text-[#F6A34A] text-xl" />
+                  </div>
+                </div>
+                <p className="text-3xl font-bold text-gray-800">12</p>
+                <p className="text-sm text-gray-500">à travers la Guinée</p>
+              </div>
+            </div>
+
+            {/* Colocations populaires */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Colocations populaires</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {colocations.slice(0, 2).map(coloc => (
+                  <div key={coloc.id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
+                    <div className="h-48 overflow-hidden">
+                      <img src={coloc.image} alt={coloc.titre} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">{coloc.titre}</h3>
+                      <p className="text-[#2C5CD5] font-bold text-lg mb-2">{coloc.prix}</p>
+                      <p className="text-gray-600 mb-4">{coloc.lieu}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="bg-[#3CB371]/10 text-[#3CB371] px-3 py-1 rounded-full text-sm">
+                          {coloc.placesDisponibles} place(s) disponible(s)
+                        </span>
+                        <button className="bg-[#2C5CD5] text-white px-4 py-2 rounded-lg hover:bg-[#1a4bbd] transition">
+                          Voir détails
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Étudiants récents */}
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Nouveaux étudiants</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {etudiants.slice(0, 3).map(etudiant => (
+                  <div key={etudiant.id} className="bg-white rounded-xl shadow-sm p-6 text-center hover:shadow-md transition">
+                    <div className="w-20 h-20 rounded-full bg-gray-200 overflow-hidden mx-auto mb-4">
+                      <img src={etudiant.photo} alt={etudiant.nom} className="w-full h-full object-cover" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">{etudiant.nom}</h3>
+                    <p className="text-gray-600 mb-2">{etudiant.filiere} - {etudiant.niveau}</p>
+                    <p className="text-gray-600 mb-4">{etudiant.universite}</p>
+                    <div className="flex justify-center items-center mb-4">
+                      {[1, 2, 3, 4, 5].map(star => (
+                        <FontAwesomeIcon 
+                          key={star} 
+                          icon={faStar} 
+                          className={star <= Math.floor(etudiant.rating) ? "text-yellow-400" : "text-gray-300"}
+                        />
+                      ))}
+                      <span className="ml-2 text-sm text-gray-600">({etudiant.rating})</span>
+                    </div>
+                    <button className="bg-[#2C5CD5] text-white px-4 py-2 rounded-lg hover:bg-[#1a4bbd] transition">
+                      Contacter
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Section Étudiants */}
+        {activeSection === 'etudiants' && (
+          <div className="animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Trouve des colocataires</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {etudiants.map(etudiant => (
+                <div key={etudiant.id} className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
+                  <div className="flex items-center mb-4">
+                    <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden mr-4">
+                      <img src={etudiant.photo} alt={etudiant.nom} className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800">{etudiant.nom}</h3>
+                      <p className="text-gray-600">{etudiant.universite}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <p className="text-gray-800 font-medium mb-1">{etudiant.filiere} - {etudiant.niveau}</p>
+                    <p className="text-gray-600 text-sm">{etudiant.bio}</p>
+                  </div>
+
+                  <div className="mb-4">
+                    <div className="flex items-center mb-2">
+                      {[1, 2, 3, 4, 5].map(star => (
+                        <FontAwesomeIcon 
+                          key={star} 
+                          icon={faStar} 
+                          className={star <= Math.floor(etudiant.rating) ? "text-yellow-400" : "text-gray-300"}
+                        />
+                      ))}
+                      <span className="ml-2 text-sm text-gray-600">({etudiant.rating})</span>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium text-gray-800 mb-2">Centres d'intérêt</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {etudiant.interests.map((interest, index) => (
+                        <span key={index} className="bg-[#F0F0F0] text-gray-700 px-3 py-1 rounded-full text-sm">
+                          {interest}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-2">
+                    <button className="flex-1 bg-[#2C5CD5] text-white py-2 rounded-lg hover:bg-[#1a4bbd] transition">
+                      Contacter
+                    </button>
+                    <button className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition">
+                      <FontAwesomeIcon icon={faHeart} className="text-gray-600" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Section Colocations */}
+        {activeSection === 'colocations' && (
+          <div className="animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Colocations disponibles</h2>
+            <div className="grid grid-cols-1 gap-6">
+              {colocations.map(coloc => (
+                <div key={coloc.id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
+                  <div className="md:flex">
+                    <div className="md:w-1/3">
+                      <div className="h-48 md:h-full">
+                        <img src={coloc.image} alt={coloc.titre} className="w-full h-full object-cover" />
+                      </div>
+                    </div>
+                    <div className="md:w-2/3 p-6">
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">{coloc.titre}</h3>
+                      <p className="text-[#2C5CD5] font-bold text-lg mb-2">{coloc.prix}</p>
+                      
+                      <div className="flex items-center text-gray-600 mb-4">
+                        <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
+                        <span>{coloc.lieu}</span>
+                      </div>
+
+                      <p className="text-gray-600 mb-4">{coloc.description}</p>
+
+                      <div className="mb-4">
+                        <h4 className="font-medium text-gray-800 mb-2">Équipements inclus:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {coloc.equipements.map((equip, index) => (
+                            <span key={index} className="bg-[#3CB371]/10 text-[#3CB371] px-3 py-1 rounded-full text-sm">
+                              {equip}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className="bg-[#3CB371]/10 text-[#3CB371] px-3 py-1 rounded-full text-sm">
+                          {coloc.placesDisponibles} place(s) disponible(s)
+                        </span>
+                        <div className="flex space-x-2">
+                          <button className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition">
+                            <FontAwesomeIcon icon={faHeart} className="mr-2" />
+                            Sauvegarder
+                          </button>
+                          <button className="bg-[#2C5CD5] text-white px-4 py-2 rounded-lg hover:bg-[#1a4bbd] transition">
+                            Contacter le propriétaire
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Section Ressources */}
+        {activeSection === 'ressources' && (
+          <div className="animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Ressources pour étudiants</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {ressources.map(ressource => (
+                <div key={ressource.id} className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
+                  <div className="w-12 h-12 rounded-lg bg-[#2C5CD5]/10 flex items-center justify-center mb-4">
+                    <FontAwesomeIcon icon={ressource.icon} className="text-[#2C5CD5] text-xl" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">{ressource.titre}</h3>
+                  <p className="text-gray-600 mb-4">{ressource.description}</p>
+                  <span className="inline-block bg-[#F0F0F0] text-gray-700 px-3 py-1 rounded-full text-sm mb-4">
+                    {ressource.type}
+                  </span>
+                  <button className="text-[#2C5CD5] font-medium hover:text-[#1a4bbd] transition">
+                    Voir plus →
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Guides supplémentaires */}
+            <div className="mt-12">
+              <h3 className="text-xl font-semibold text-gray-800 mb-6">Guides pratiques</h3>
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex items-start">
+                    <div className="w-10 h-10 rounded-lg bg-[#3CB371]/10 flex items-center justify-center mr-4 flex-shrink-0">
+                      <FontAwesomeIcon icon={faMoneyBillWave} className="text-[#3CB371]" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-800 mb-2">Gérer son budget étudiant</h4>
+                      <p className="text-gray-600">Conseils pour bien gérer tes finances pendant tes études.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="w-10 h-10 rounded-lg bg-[#F6A34A]/10 flex items-center justify-center mr-4 flex-shrink-0">
+                      <FontAwesomeIcon icon={faHome} className="text-[#F6A34A]" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-800 mb-2">Checklist emménagement</h4>
+                      <p className="text-gray-600">Tout ce qu'il faut vérifier avant de signer un bail.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <p className="text-gray-700">"Grâce à LoguiStud, j'ai trouvé une colocataire géniale avec qui je m'entends parfaitement. Le système de compatibilité est vraiment efficace!"</p>
             </div>
-            
-            <div className="bg-[#F0F0F0] p-6 rounded-lg">
+          </div>
+        )}
+
+        {/* Section Forum */}
+        {activeSection === 'forum' && (
+          <div className="animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Forum des étudiants</h2>
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
               <div className="flex items-center mb-4">
-                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" alt="Mohamed" className="w-12 h-12 rounded-full mr-4" />
-                <div>
-                  <h4 className="font-bold">Mohamed Camara</h4>
-                  <p className="text-gray-600">Étudiant en Informatique</p>
+                <div className="w-12 h-12 rounded-full bg-gray-200 mr-4"></div>
+                <input 
+                  type="text" 
+                  placeholder="Pose une question à la communauté..."
+                  className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2C5CD5]/20 focus:border-[#2C5CD5]"
+                />
+              </div>
+              <div className="flex justify-end">
+                <button className="bg-[#2C5CD5] text-white px-4 py-2 rounded-lg hover:bg-[#1a4bbd] transition">
+                  Publier
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <div className="flex items-start mb-4">
+                  <div className="w-10 h-10 rounded-full bg-gray-200 mr-4"></div>
+                  <div>
+                    <h4 className="font-semibold text-gray-800">Comment trouver un logement pas cher près de l'UGANC?</h4>
+                    <p className="text-gray-600 text-sm">Posté par Mohamed • Il y a 2 heures</p>
+                  </div>
+                </div>
+                <p className="text-gray-800 mb-4">
+                  Je commence mes études à l'UGANC le mois prochain et je cherche un logement abordable...
+                </p>
+                <div className="flex items-center space-x-4 text-gray-600">
+                  <button className="flex items-center space-x-1">
+                    <FontAwesomeIcon icon={faComment} />
+                    <span>12 réponses</span>
+                  </button>
+                  <button className="flex items-center space-x-1">
+                    <FontAwesomeIcon icon={faHeart} />
+                    <span>8 j'aime</span>
+                  </button>
+                  <button className="flex items-center space-x-1">
+                    <FontAwesomeIcon icon={faShare} />
+                    <span>Partager</span>
+                  </button>
                 </div>
               </div>
-              <p className="text-gray-700">"Je cherchais un colocataire sérieux pour partager un appartement près du campus. En une semaine, j'ai trouvé la personne idéale sur LoguiStud."</p>
-            </div>
-          </div>
-        </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h4 className="text-xl font-bold mb-4">LoguiStud</h4>
-              <p className="text-gray-400">La plateforme de colocation étudiante en Guinée.</p>
-            </div>
-            
-            <div>
-              <h4 className="text-lg font-bold mb-4">Liens rapides</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white">Accueil</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">À propos</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Comment ça marche</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Contact</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="text-lg font-bold mb-4">Ressources</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white">Blog</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">FAQ</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Conditions d'utilisation</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Politique de confidentialité</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="text-lg font-bold mb-4">Contact</h4>
-              <p className="text-gray-400 mb-2">contact@loguistud.gn</p>
-              <p className="text-gray-400 mb-2">+224 623 45 67 89</p>
-              <p className="text-gray-400">Conakry, Guinée</p>
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <div className="flex items-start mb-4">
+                  <div className="w-10 h-10 rounded-full bg-gray-200 mr-4"></div>
+                  <div>
+                    <h4 className="font-semibold text-gray-800">Recherche colocataire pour appartement à Kindia</h4>
+                    <p className="text-gray-600 text-sm">Posté par Fatoumata • Il y a 1 jour</p>
+                  </div>
+                </div>
+                <p className="text-gray-800 mb-4">
+                  Nous avons un appartement de 3 chambres à Kindia, il reste une place disponible...
+                </p>
+                <div className="flex items-center space-x-4 text-gray-600">
+                  <button className="flex items-center space-x-1">
+                    <FontAwesomeIcon icon={faComment} />
+                    <span>5 réponses</span>
+                  </button>
+                  <button className="flex items-center space-x-1">
+                    <FontAwesomeIcon icon={faHeart} />
+                    <span>3 j'aime</span>
+                  </button>
+                  <button className="flex items-center space-x-1">
+                    <FontAwesomeIcon icon={faShare} />
+                    <span>Partager</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          
-          <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-            <p>&copy; 2025 LoguiStud. Tous droits réservés.</p>
-          </div>
-        </div>
-      </footer>
+        )}
+      </div>
     </div>
   );
 };

@@ -238,72 +238,6 @@ const Annonce = () => {
 
           {/* Grille d'annonces */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="annonces-container">
-            {/* {logements?.length>0 && annonces.map((annonce, index) => (
-              <div
-                key={annonce.id}
-                className="card-animate bg-white rounded-xl overflow-hidden shadow-md card-hover"
-                style={{
-                  animationDelay: `${0.1 + index * 0.1}s`,
-                  opacity: 0
-                }}
-              >
-                <div className="relative">
-                  <img
-                    src={annonce.image}
-                    alt={annonce.titre}
-                    className="w-full h-48 object-cover"
-                  />
-                  {annonce.badge && (
-                    <div
-                      className="absolute top-3 left-3 text-white px-2 py-1 rounded text-xs font-bold"
-                      style={{ backgroundColor: annonce.badge.couleur }}
-                    >
-                      {annonce.badge.texte}
-                    </div>
-                  )}
-                  <button
-                    className="absolute top-3 right-3 bg-white/90 hover:bg-white text-gray-800 w-8 h-8 rounded-full flex items-center justify-center shadow"
-                    onClick={() => toggleFavori(annonce.id)}
-                  >
-                    <FontAwesomeIcon
-                      icon={favoris[annonce.id] ? faHeartSolid : faHeartRegular}
-                      className={favoris[annonce.id] ? 'text-[#F6A34A]' : ''}
-                    />
-                  </button>
-                </div>
-                <div className="p-5">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-bold text-gray-800">{annonce.titre}</h3>
-                    <p className="text-lg font-bold text-[#2C5CD5]">{annonce.prix}</p>
-                  </div>
-                  <p className="text-gray-600 mb-4 flex items-center">
-                    <FontAwesomeIcon icon={faMapMarkerAlt} className="text-[#3CB371] mr-2" />
-                    {annonce.localisation}
-                  </p>
-
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {annonce.tags.map((tag, i) => (
-                      <span key={i} className="bg-[#F0F0F0] text-gray-700 px-2 py-1 rounded text-xs">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden mr-2">
-                        <img src={annonce.proprietaire.avatar} alt="Propriétaire" />
-                      </div>
-                      <span className="text-sm text-gray-600">{annonce.proprietaire.nom}</span>
-                    </div>
-                    <Link to="/annonces/details" className="text-[#2C5CD5] hover:text-[#2351C0] font-medium flex items-center">
-                      Voir plus <FontAwesomeIcon icon={faArrowRight} className="ml-1" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))} */}
-            {/* Mine */}
             {logements?.length > 0 && logements.map((logement, index) => (
               <div
                 key={index}
@@ -342,7 +276,7 @@ const Annonce = () => {
                     <h3 className="text-xl font-bold text-gray-800">{logement.titre}</h3>
                     <p className="text-lg font-bold text-[#2C5CD5]">{logement.prix} GNF</p>
                   </div>
-                  <p className="text-gray-600 mb-4 flex items-center">
+                  <p className="text-g  ray-600 mb-4 flex items-center">
                     <FontAwesomeIcon icon={faMapMarkerAlt} className="text-[#3CB371] mr-2" />
                     {logement.ville}, {logement.quartier}
                   </p>

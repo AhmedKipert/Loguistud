@@ -129,10 +129,10 @@ const Navbar = () => {
                       <p className="text-xs text-gray-500 truncate">{user.email}</p>
                     </div>
                     <Link to={user.role === 'proprietaire' ? '/proprietaire/dashboard' : '/etudiant/dashboard'} className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition">
-                    <FaUserCircle className="inline mr-2 text-blue-600" />
-                    Mon profil
-                  </Link>
-                    {user.role === 'proprietaire' && <Link href="/proprietaire/dashboard/" className="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition">
+                      <FaUserCircle className="inline mr-2 text-blue-600" />
+                      Mon profil
+                    </Link>
+                    {user.role === 'proprietaire' && <Link to="/proprietaire/dashboard/annonces" className="block px-4 py-3 text-gray-700 hover:bg-gray-100 transition">
                       <FaHome className="inline mr-2 text-green-500" />
                       Mes annonces
                     </Link>}

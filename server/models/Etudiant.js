@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { boolean } = require('zod');
 
 const etudiantSchema = mongoose.Schema({
-    photoProfil: {
+    photoProfile: {
         type: String
     },
     prenom: {

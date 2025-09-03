@@ -12,9 +12,9 @@ exports.create = async (req, res) => {
         // console.log(req.body);
         // console.log("Fichier image", req.file);
         let { prenom, nom, age, telephone, universite, filiere, niveau, annee_etude, email, motdepasse } = req.body
-        
+
         const lienDossierImages = req.file ? 'uploads/photosProfiles/' : '';
-        const photoProfil = lienDossierImages + req.file?.filename || '';
+        const photoProfile = lienDossierImages + req.file?.filename || '';
         const adresse = req.body.adresse || '';
 
         if (!prenom || !nom || !age ||
@@ -25,7 +25,7 @@ exports.create = async (req, res) => {
         motdepasse = await bcrypt.hash(motdepasse, 10);
 
         const nouvelEtudiant = await Etudiant.create({
-            photoProfil,
+            photoProfile,
             prenom,
             nom,
             age,
@@ -197,37 +197,211 @@ object-position: 50% 80%;
     }
 };
 
-// // Vérification d'email
-// exports.verificationEmail = async (req, res) => {
-//     try {
-//         const token = req.query.token;
-//         console.log('Requête reçu avec succès: ', token);
 
-//         if (!token) return res.status(400).json({ message: "Ce lien est invalide" });
+// Modification des informations étudiant
+exports.editerMesInformations = async (req, res) => {
+    try {
+        console.log('Requête de modification reçue');
+        console.log('Fichier reçu:', req.file);
+        console.log('Données reçues:', req.body);
 
-//         // Vérification de la validé du token
-//         jwt.verify(token, process.env.SECRET_KEY, async (err, payload) => {
-//             if (err) return res.status(400).json({ message: "Votre lien de vérification a expiré veuillez réssayez la création" });
+        const id = req.user.compte.id;
+        let { prenom, nom, age, telephone, adresse, universite, filiere, niveau, annee_etude } = req.body;
 
-//             const etudiant = await Etudiant.findOne({ email: payload.email });
-//             etudiant.isVerified = true; // activer le compte
-//             console.log('Compte activé avec succès.');
-//             await etudiant.save();
+        // Vérification des champs obligatoires
+        if (!prenom || !nom || !age || !telephone || !universite || !filiere) {
+            return res.status(400).json({
+                success: false,
+                message: 'Veuillez renseigner tous les champs obligatoires'
+            });
+        }
 
-//             const user = await User.create({
-//                 email: etudiant.email,
-//                 motdepasse: etudiant.motdepasse,
-//                 compte: etudiant._id,
-//                 role: etudiant.role
-//             });
-//             console.log('User créer avec succes', user);
-//             console.log('Compte utilisateur créer avec succès:', etudiant.email);
-//             res.status(200).json({ message: "Félicitation! Votre compte à été activé avec succès", etudiant });
-//         });
+        // Recherche de l'étudiant
+        const etudiant = await Etudiant.findById(id);
+        if (!etudiant) {
+            return res.status(404).json({
+                success: false,
+                message: 'Étudiant non trouvé'
+            });
+        }
 
-//     } catch (error) {
-//         console.log('Verication token error', error);
-//         res.status(500).json({ message: 'Erreur côté serveur' });
-//     }
-// };
+        // Gestion de la photo de profil
+        let photoProfile = etudiant.photoProfile;
+        if (req.file) {
+            photoProfile = 'uploads/photosProfiles/' + req.file.filename;
 
+            // Supprimer l'ancienne photo si elle existe et n'est pas la photo par défaut
+            if (etudiant.photoProfile && !etudiant.photoProfile.includes('default')) {
+                const fs = require('fs');
+                const path = require('path');
+                const oldImagePath = path.join(__dirname, '..', '..', etudiant.photoProfile);
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
+            }
+        }
+
+        // Mise à jour des informations
+        const etudiantModifie = await Etudiant.findByIdAndUpdate(
+            id,
+            {
+                photoProfile,
+                prenom,
+                nom,
+                age,
+                telephone,
+                adresse: adresse || '',
+                universite,
+                filiere,
+                niveau: niveau || '',
+                annee_etude: annee_etude || ''
+            },
+            { new: true, runValidators: true }
+        );
+
+        console.log('Informations étudiant mises à jour avec succès');
+
+        res.status(200).json({
+            success: true,
+            message: 'Informations mises à jour avec succès',
+            data: {
+                id: etudiantModifie._id,
+                prenom: etudiantModifie.prenom,
+                nom: etudiantModifie.nom,
+                age: etudiantModifie.age,
+                telephone: etudiantModifie.telephone,
+                adresse: etudiantModifie.adresse,
+                universite: etudiantModifie.universite,
+                filiere: etudiantModifie.filiere,
+                niveau: etudiantModifie.niveau,
+                annee_etude: etudiantModifie.annee_etude,
+                photoProfile: etudiantModifie.photoProfile
+            }
+        });
+
+    } catch (error) {
+        console.error('Erreur lors de la modification:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Erreur serveur lors de la modification'
+        });
+    }
+};
+
+
+// Modification de l'email
+exports.modifierEmail = async (req, res) => {
+    try {
+        const id = req.user.compte.id;
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Veuillez fournir une adresse email'
+            });
+        }
+
+        // Vérifier si l'email est déjà utilisé
+        const emailExiste = await Etudiant.findOne({ email });
+        if (emailExiste && emailExiste._id.toString() !== id) {
+            return res.status(400).json({
+                success: false,
+                message: 'Cette adresse email est déjà utilisée'
+            });
+        }
+
+        // Mettre à jour l'email
+        const etudiantModifie = await Etudiant.findByIdAndUpdate(
+            id,
+            { email },
+            { new: true, runValidators: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: 'Email modifié avec succès',
+            data: {
+                email: etudiantModifie.email
+            }
+        });
+
+    } catch (error) {
+        console.error('Erreur lors de la modification de l\'email:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Erreur serveur lors de la modification de l\'email'
+        });
+    }
+};
+
+// Modification du mot de passe
+exports.modifierMotDePasse = async (req, res) => {
+    try {
+        const id = req.user.compte.id;
+        const { ancienMotdepasse, nouveauMotdepasse, confirmationMotdepasse } = req.body;
+
+        // Validation des champs
+        if (!ancienMotdepasse || !nouveauMotdepasse || !confirmationMotdepasse) {
+            return res.status(400).json({
+                success: false,
+                message: 'Veuillez remplir tous les champs'
+            });
+        }
+
+        // Vérifier que les nouveaux mots de passe correspondent
+        if (nouveauMotdepasse !== confirmationMotdepasse) {
+            return res.status(400).json({
+                success: false,
+                message: 'Les nouveaux mots de passe ne correspondent pas'
+            });
+        }
+
+        // Vérifier la longueur du nouveau mot de passe
+        if (nouveauMotdepasse.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: 'Le mot de passe doit contenir au moins 6 caractères'
+            });
+        }
+
+        // Récupérer l'étudiant
+        const etudiant = await Etudiant.findById(id);
+        if (!etudiant) {
+            return res.status(404).json({
+                success: false,
+                message: 'Étudiant non trouvé'
+            });
+        }
+
+        // Vérifier l'ancien mot de passe
+        const motDePasseValide = await bcrypt.compare(ancienMotdepasse, etudiant.motdepasse);
+        if (!motDePasseValide) {
+            return res.status(400).json({
+                success: false,
+                message: 'Ancien mot de passe incorrect'
+            });
+        }
+
+        // Hasher le nouveau mot de passe
+        const motDePasseHash = await bcrypt.hash(nouveauMotdepasse, 10);
+
+        // Mettre à jour le mot de passe
+        await Etudiant.findByIdAndUpdate(
+            id,
+            { motdepasse: motDePasseHash }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: 'Mot de passe modifié avec succès'
+        });
+
+    } catch (error) {
+        console.error('Erreur lors de la modification du mot de passe:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Erreur serveur lors de la modification du mot de passe'
+        });
+    }
+};

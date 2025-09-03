@@ -60,14 +60,6 @@ export const Connexion = () => {
     <div className="bg-gray-50 min-h-screen">
       <Navbar />
       <div className="flex flex-col md:flex-row min-h-screen">
-        {/* Section Illustration (mobile) */}
-        <div className="md:hidden h-48 overflow-hidden">
-          <img
-            src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-            alt="Étudiants guinéens"
-            className="w-full h-full object-cover"
-          />
-        </div>
 
         {/* Section Formulaire */}
         <div
@@ -170,40 +162,6 @@ export const Connexion = () => {
                 Créer un compte
               </Link>
             </form>
-          </div>
-        </div>
-
-        {/* Section Illustration (desktop) */}
-        <div
-          className="hidden md:flex md:w-1/2 items-center justify-center p-12"
-          style={{
-            background: 'linear-gradient(to bottom right, #2C5CD5, #3CB371)'
-          }}
-        >
-          <div className="text-white text-center max-w-md">
-            <img
-              src="https://images.unsplash.com/photo-1588072432836-e10032774350?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-              alt="Campus universitaire en Guinée"
-              className="w-full h-64 object-cover rounded-xl shadow-lg mb-8"
-            />
-            <h2 className="text-3xl font-bold mb-4">Bienvenue sur LoguiStud</h2>
-            <p className="text-lg opacity-90 mb-6">
-              La nouvelle plateforme pour le logement étudiant en Guinée
-            </p>
-            <div className="flex justify-center space-x-4">
-              <div className="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
-                <FontAwesomeIcon icon={faHome} className="text-2xl mb-2" />
-                <p className="text-sm">500+ logements</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
-                <FontAwesomeIcon icon={faUniversity} className="text-2xl mb-2" />
-                <p className="text-sm">15 villes</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm p-3 rounded-lg">
-                <FontAwesomeIcon icon={faShieldAlt} className="text-2xl mb-2" />
-                <p className="text-sm">100% sécurisé</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>

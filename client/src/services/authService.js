@@ -28,7 +28,7 @@ export const deconnexion = async() => {
         console.log('Erreur inattendue');
         return {success: false};
     }
-};
+};  
 
 // Verification de compte
 export const verificationEmail = async (token) => {

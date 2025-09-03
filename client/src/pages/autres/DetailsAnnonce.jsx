@@ -15,6 +15,9 @@ import { logementUnique } from '../../services/logementService';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import { Loading } from './Loading';
+import { conversation } from '../../services/conversationService';
+import LocalisationLogement from './LocalisationLogement';
+import MapView from './MapView';
 
 const DetailAnnonce = () => {
   const [annonce, setAnnonce] = useState(null);
@@ -42,6 +45,17 @@ const DetailAnnonce = () => {
     logement();
   }, []);
 
+
+  const handleConversation = async () => {
+    const res = await conversation(annonce.proprietaire._id);
+    if (res.success) {
+      alert('Voici ID de la conversaton: ' + res.conversation._id);
+      navigate('/etudiant/dashboard/messagerie/' + res.conversation._id);
+    } else {
+      alert(res.message);
+    }
+  }
+
   if (loading) return <Loading />
 
   return (
@@ -51,13 +65,6 @@ const DetailAnnonce = () => {
 
       {/* Contenu principal */}
       <main className="container mx-auto px-4 py-8">
-        {/* Fil d'Ariane */}
-        {/* <div className="mb-6 text-sm text-g ray-600">
-            <a href="/" className="hover:text-blue-600">Accueil</a>
-            <a href="/annonces" className="hover:text-blue-600">Annonces</a>
-            <span className="text-gray-800">Studio Moderne</span>
-          </div> */}
-
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Section gauche (70%) */}
           <div className="lg:w-2/3">
@@ -74,19 +81,6 @@ const DetailAnnonce = () => {
                 <p className="text-2xl font-bold text-blue-600">{annonce.prix} GNF <span className="text-lg font-normal text-gray-600">/mois</span></p>
                 <p className="text-sm text-gray-500 text-right">{annonce.charge ? "Charges incluses" : ''}</p>
               </div>
-            </div>
-
-            {/* Badges */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm font-medium">
-                <FontAwesomeIcon icon={faCheckCircle} className="mr-1" /> Annonce vérifiée
-              </span>
-              <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-medium">
-                <FontAwesomeIcon icon={faHome} className="mr-1" /> Propriétaire direct
-              </span>
-              <span className="bg-orange-100 text-orange-500 px-3 py-1 rounded-full text-sm font-medium">
-                <FontAwesomeIcon icon={faBolt} className="mr-1" /> Disponible maintenant
-              </span>
             </div>
 
             {/* Galerie d'images */}
@@ -109,7 +103,7 @@ const DetailAnnonce = () => {
                 <div className="h-48 rounded-xl overflow-hidden animate-card" style={{ animationDelay: '0.3s' }}>
                   <img
                     src={`${import.meta.env.VITE_API_URL}/${annonce.photos[2]}`} alt="Salle de bain moderne"
-                    className="w-full h-full object-cover gallery-image hover:scale-102 hover:shadow-lg transition-transform duration-300 cursor-pointer"
+                    className="w-full h-full object-cover gallery-image hover:scale-102 hover:shadow-lg duration-300 cursor-pointer"
                   />
                 </div>
               </div>
@@ -189,22 +183,22 @@ const DetailAnnonce = () => {
                 Équipements inclus
               </h2>
               <div className="flex flex-wrap gap-3">
-                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md transition-all">
+                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md ">
                   <FontAwesomeIcon icon={faWifi} className="text-blue-600 mr-2" /> Wifi
                 </span>
-                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md transition-all">
+                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md ">
                   <FontAwesomeIcon icon={faFan} className="text-green-500 mr-2" /> Climatisation
                 </span>
-                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md transition-all">
+                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md ">
                   <FontAwesomeIcon icon={faTshirt} className="text-orange-500 mr-2" /> Machine à laver
                 </span>
-                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md transition-all">
+                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md ">
                   <FontAwesomeIcon icon={faBlender} className="text-blue-600 mr-2" /> Équipement cuisine
                 </span>
-                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md transition-all">
+                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md">
                   <FontAwesomeIcon icon={faLock} className="text-green-500 mr-2" /> Sécurité 24/7
                 </span>
-                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md transition-all">
+                <span className="feature-badge bg-gray-100 px-4 py-2 rounded-full flex items-center hover:-translate-y-1 hover:shadow-md">
                   <FontAwesomeIcon icon={faWater} className="text-blue-600 mr-2" /> Eau courante
                 </span>
               </div>
@@ -217,6 +211,8 @@ const DetailAnnonce = () => {
               </h2>
               <div className="h-64 bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
                 <FontAwesomeIcon icon="map-marked-alt" className="text-4xl text-gray-400" />
+                
+                {annonce && <MapView latitude={annonce.localisation[1]} longitude={annonce.localisation[0]} />}
               </div>
               <div className="flex flex-wrap gap-2">
                 <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
@@ -276,11 +272,11 @@ const DetailAnnonce = () => {
                     </div>
                   </div>
 
-                  <Link to={`/etudiant/dashboard/messagerie/${annonce.proprietaire._id}`} className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-bold mb-3 transition flex items-center justify-center">
+                  <button onClick={handleConversation} className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-bold mb-3  flex items-center justify-center">
                     <FontAwesomeIcon icon={faCommentDots} className="mr-2" /> Envoyer un message
-                  </Link>
+                  </button>
 
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition flex items-center justify-center">
+                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold  flex items-center justify-center">
                     <FontAwesomeIcon icon={faPhoneAlt} className="mr-2" /> Appeler maintenant
                   </button>
                 </div>
@@ -306,7 +302,7 @@ const DetailAnnonce = () => {
                       <option>Soirée (18h-20h)</option>
                     </select>
                   </div>
-                  <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-bold transition">
+                  <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-bold">
                     Demander une visite
                   </button>
                 </div>
@@ -335,7 +331,7 @@ const DetailAnnonce = () => {
       <Footer />
 
       {/* Styles globaux */}
-      <style jsx global>{`
+      {/* <style jsx global>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
@@ -354,7 +350,7 @@ const DetailAnnonce = () => {
         .feature-badge {
           transition: all 0.3s;
         }
-      `}</style>
+      `}</style> */}
     </div>
   );
 };

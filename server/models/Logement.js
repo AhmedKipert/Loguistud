@@ -40,8 +40,7 @@ const logementSchema = mongoose.Schema({
         equipements: [String]
     },
     photos: [String],
-    longitude: String,
-    latitude: String,
+    localisation: [String],
     proprietaire: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Proprietaire',

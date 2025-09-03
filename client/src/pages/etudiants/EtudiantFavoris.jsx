@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaHeart, FaRegHeart, FaBell, FaFilter, FaSort, FaMapMarkerAlt, FaChevronRight, FaBars, FaSearch } from 'react-icons/fa';
 
-const EtudiantFavories = () => {
+const EtudiantFavoris = () => {
   const [favorites, setFavorites] = useState([
     {
       id: 1,
@@ -145,4 +145,4 @@ const EtudiantFavories = () => {
   );
 };
 
-export default EtudiantFavories;
+export default EtudiantFavoris;

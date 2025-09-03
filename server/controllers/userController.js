@@ -45,7 +45,7 @@ exports.connexion = async (req, res) => {
             sameSite: 'Lax',
             maxAge: 1000 * 60 * 60 * 24
         });
-
+  
         const { motdepasse, _v, ...userFinal } = user.toObject();
 
         console.log("connexion réussie");
@@ -66,6 +66,7 @@ exports.connexion = async (req, res) => {
     }
 }
 
+// Deconnexion
 exports.deconnexion = (req, res) => {
     console.log("COOKIES", res.cookies)
     res.cookie('token', '', {
